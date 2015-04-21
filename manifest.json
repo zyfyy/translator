@@ -1,0 +1,24 @@
+{
+	"name": "Qi翻译",
+	"manifest_version": 2,
+	"version": "1.0",
+	"description": "使用百度api选词翻译",
+	"background": {
+		"persistent": false,
+		"scripts": ["js/bg.js"]
+	},
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"css": ["css/show.css"],
+			"js": ["js/content.js"]
+		}
+	],
+	"permissions": [
+		"tabs",
+		"http://openapi.baidu.com/"
+	],
+	"browser_action": {
+		"default_popup": "popup.html"
+	}
+}
