@@ -43,7 +43,7 @@ chrome.extension.onMessage.addListener(
 )
 
 function sendMsg(param) {
-	chrome.extension.sendMessage({greeting: "hello", param}, function(response) {
+	chrome.extension.sendMessage({greeting: "hello", param: param}, function(response) {
 	})
 }
 
@@ -66,6 +66,7 @@ function handler(result) {
 			var symbol_ph = document.createElement("span")
 			symbol_ph.innerText = result.data.symbols[symbol].ph_zh ||
 					result.data.symbols[symbol].ph_am || result.data.symbols[symbol].ph_en
+					|| ""
 			symbol_ph.className = "translate_ph"
 			symbol_dom.appendChild(symbol_ph)
 
@@ -98,6 +99,7 @@ function handler(result) {
 		pop.className = "translate_pop"
 		pop.style.top = wordPos_y + "px"
 		pop.style.left = wordPos_x + "px"
+
 
 		document.getElementsByTagName("body")[0].appendChild(pop)
 	}
