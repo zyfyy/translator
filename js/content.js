@@ -42,9 +42,9 @@ function listen(e) {
 		}
 	} else {
 		last_string = ""
-		// if (document.getElementsByClassName("translate_pop").length) {
-		// 	document.getElementsByClassName("translate_pop")[0].remove()
-		// }
+		if (document.getElementsByClassName("translate_pop").length) {
+			document.getElementsByClassName("translate_pop")[0].remove()
+		}
 	}
 }
 
