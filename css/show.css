@@ -21,7 +21,7 @@
   font-style: normal;
 }
 .translate_pop ol {
-  margin: 0 0 1em 1.5em;
+  margin: 0 0 1em 2.5em;
   padding: 0;
   color: #fff;
 }
@@ -32,4 +32,5 @@
   margin: 0;
   padding: 0;
   display: block;
+  text-indent: -1em;
 }
