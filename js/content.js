@@ -19,10 +19,10 @@ window.addEventListener('click', function(e) {
 		if (last_string !== param.q) {
 			send = setTimeout(function() {sendMsg(param)}, 100)
 			last_string = param.q
-			// wordPos_x = e.clientX + window.scrollX
-			// wordPos_y = e.clientY + window.scrollY
-			wordPos_x = e.clientX
-			wordPos_y = e.clientY
+			wordPos_x = e.clientX + window.scrollX
+			wordPos_y = e.clientY + window.scrollY
+			// wordPos_x = e.clientX
+			// wordPos_y = e.clientY
 		}
 	} else {
 		last_string = ""
@@ -86,7 +86,7 @@ function handler(result) {
 				means_dom.className = "translate_means"
 				for (var mean in means) {
 					var mean_dom = document.createElement("li")
-					mean_dom.innerText = means[mean]
+					mean_dom.innerText = parseInt(mean) + 1 + ". " + means[mean]
 					means_dom.appendChild(mean_dom)
 				}
 				symbol_parts.appendChild(means_dom)
