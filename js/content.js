@@ -4,6 +4,22 @@ var wordPos_x
 var wordPos_y
 
 window.addEventListener('click', function(e) {
+	listen(e)
+})
+
+var anchor = document.querySelectorAll("a");
+
+for (var i = 0; i < anchor.length; i++) {
+	addEvent(anchor[i])
+}
+
+function addEvent(dom) {
+	dom.addEventListener('mouseleave', function(e) {
+		listen(e)
+	})
+}
+
+function listen(e) {
 	var string = window.getSelection().toString()
 	if (string) {
 		clearTimeout(send)
@@ -26,11 +42,16 @@ window.addEventListener('click', function(e) {
 		}
 	} else {
 		last_string = ""
-		if (document.getElementsByClassName("translate_pop").length) {
-			document.getElementsByClassName("translate_pop")[0].remove()
-		}	
+		// if (document.getElementsByClassName("translate_pop").length) {
+		// 	document.getElementsByClassName("translate_pop")[0].remove()
+		// }
 	}
-})
+}
+
+function sendMsg(param) {
+	chrome.extension.sendMessage({greeting: "hello", param: param}, function(response) {
+	})
+}
 
 chrome.extension.onMessage.addListener(
 	function(request, sender, sendResponse) {
@@ -41,11 +62,6 @@ chrome.extension.onMessage.addListener(
 		}
 	}
 )
-
-function sendMsg(param) {
-	chrome.extension.sendMessage({greeting: "hello", param: param}, function(response) {
-	})
-}
 
 function handler(result) {
 	if (document.getElementsByClassName("translate_pop").length) {
