@@ -86,7 +86,6 @@ function handler(result) {
 			symbol_ph.className = "translate_ph"
 			symbol_dom.appendChild(symbol_ph)
 
-
 			var parts = result.data.symbols[symbol].parts
 			var symbol_parts = document.createElement("div")
 			symbol_parts.className = "translate_parts"
@@ -115,7 +114,6 @@ function handler(result) {
 		pop.className = "translate_pop"
 		pop.style.top = wordPos_y + "px"
 		pop.style.left = wordPos_x + "px"
-
 
 		document.getElementsByTagName("body")[0].appendChild(pop)
 	}
