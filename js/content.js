@@ -24,7 +24,7 @@ function listen(e) {
     let param = {
       from: 'en',
       to: 'zh',
-      q: string.trim().toLowerCase().split(' ')[0],
+      q: string.trim().toLowerCase(),
     };
     if (string.match(/[^\x00-\x80]/g)) {
       param.from = 'zh';
@@ -151,8 +151,8 @@ function buildYouDaoPop(result) {
 
   // web解释
   let tsWeb = document.createElement('div');
-  tsWeb.classList = (result.basic && result.basic.explains) ? 'translate_web dashed' : 'translate_web';
   if (result.web) {
+    tsWeb.className = 'translate_web';
     result.web.map(symbol => {
       let part = document.createElement('div');
       part.className = 'translate_web_parts';

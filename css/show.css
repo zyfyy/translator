@@ -24,6 +24,7 @@
   line-height: 2rem;
   font-weight: bold;
   background: transparent;
+  text-align: left;
 }
 .translate_pop .translate_ph {
   font-size: 12px;
@@ -69,5 +70,6 @@
 
 .translate_pop .translate_web_parts p {
   font-size: 12px;
+  color: #fff;
   margin: 0;
 }
