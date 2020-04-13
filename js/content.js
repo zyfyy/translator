@@ -18,7 +18,7 @@ function addEvent(dom) {
 }
 
 function listen(e) {
-  let string = window.getSelection().toString();
+  let string = window.getSelection().toString().split(' ')[0];
   if (string) {
     clearTimeout(send);
     let param = {

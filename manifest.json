@@ -33,7 +33,7 @@
 		"http://openapi.baidu.com/"
 	],
 	"browser_action": {
-		"default_icon": "icon48.png",
+		"default_icon": "icon128.png",
 		"default_popup": "popup.html"
 	}
 }
