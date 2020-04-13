@@ -1,7 +1,7 @@
 {
 	"name": "酷爱翻译",
 	"manifest_version": 2,
-	"version": "1.1.1",
+	"version": "1.2",
 	"description": "碰到英文生单词？汉字有几个意思？双击、划句，英译汉、汉译英，快捷好用。",
 	"icons": {
 		"48": "icon48.png"
