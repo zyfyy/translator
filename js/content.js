@@ -18,7 +18,13 @@ function addEvent(dom) {
 }
 
 function listen(e) {
-  let string = window.getSelection().toString().split(' ')[0];
+  const string = window.getSelection().toString().trim();
+  // 防止翻译代码，简单抽取几种特殊字符
+  const limitStr = /[{}()<>\[\]:=|+-\/?]/;
+  if (string.match(limitStr)) {
+    return;
+  }
+
   if (string) {
     clearTimeout(send);
     let param = {
