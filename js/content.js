@@ -172,3 +172,4 @@ function buildYouDaoPop(result) {
   pop.appendChild(symbol_dom);
   document.getElementsByTagName('body')[0].appendChild(pop);
 }
+
