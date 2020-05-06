@@ -20,7 +20,7 @@ function addEvent(dom) {
 function listen(e) {
   const string = window.getSelection().toString().trim();
   // 防止翻译代码，简单抽取几种特殊字符
-  const limitStr = /[{}()<>\[\]:=|+-\/?]/;
+  const limitStr = /[，。{}()<>\[\]:=|+-\/?]/;
   if (string.match(limitStr)) {
     return;
   }
