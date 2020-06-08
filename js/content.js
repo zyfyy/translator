@@ -1,9 +1,72 @@
+const css = `
+.translate_pop {
+	position: absolute;
+	background: rgba(120, 10, 120, 0.8);
+  box-shadow: 1px 1px 3px rgba(120, 10, 120, 0.6);
+  border-radius: 6px;
+	color: #fff;
+	padding: 12px 12px 12px 12px;
+  z-index: 1000000;
+  font-family: monospace, sans-serif;
+  font-size: 16px;
+}
+
+.translate_pop::selection {
+  color: #fff;
+  background: transparent;
+}
+
+.translate_pop h3 {
+  margin: 5px 0;
+  padding: 0;
+  border-bottom: 1px dotted #fff;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.translate_pop .translate_basic {
+  margin: 6px 0;
+}
+
+.translate_pop .translate_basic_parts ol {
+  font-size: 16px;
+  margin: 0;
+  display: block;
+  list-style-type: decimal;
+  margin-block-start: 0em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 40px;
+}
+
+.translate_pop .translate_basic_parts ol li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+.translate_pop .translate_web {
+  border-top: 1px dotted #fff;
+  margin-top: 16px;
+}
+
+.translate_pop .translate_web_parts h5 {
+  font-size: 16px;
+  margin: 5px 0 0 0;
+}
+
+.translate_pop .translate_web_parts p {
+  margin: 0;
+}
+`;
+
+
 let send;
 let last_string;
 let wordPos_x;
 let wordPos_y;
 
-window.addEventListener('click', listen);
+window.addEventListener('click', tryTranslate);
 
 let anchor = document.querySelectorAll('a');
 
@@ -13,11 +76,11 @@ for (let i = 0; i < anchor.length; i++) {
 
 function addEvent(dom) {
   dom.addEventListener('mouseleave', function (e) {
-    listen(e);
+    tryTranslate(e);
   });
 }
 
-function listen(e) {
+function tryTranslate(e) {
   const string = window.getSelection().toString().trim();
   // 防止翻译代码，简单抽取几种特殊字符
   const limitStr = /[，。{}()<>\[\]:=|+-\/?]/;
@@ -26,6 +89,9 @@ function listen(e) {
   }
 
   if (string) {
+    wordPos_x = e.clientX + window.scrollX;
+    wordPos_y = e.clientY + window.scrollY;
+
     clearTimeout(send);
     let param = {
       from: 'en',
@@ -36,28 +102,27 @@ function listen(e) {
       param.from = 'zh';
       param.to = 'en';
     }
+
+
     if (last_string !== param.q) {
       send = setTimeout(function () {
         sendMsg(param);
       }, 100);
       last_string = param.q;
-      wordPos_x = e.clientX + window.scrollX;
-      wordPos_y = e.clientY + window.scrollY;
-      // wordPos_x = e.clientX
-      // wordPos_y = e.clientY
     }
   } else {
     last_string = '';
-    if (document.getElementsByClassName('translate_pop').length) {
-      document.getElementsByClassName('translate_pop')[0].remove();
+    let shadowHost = document.querySelector(`#${shadowHostId}`) || null;
+    if (shadowHost) {
+      const shadowRoot = shadowHost.shadowRoot;
+      const content = shadowRoot.querySelector('.translate_pop');
+      content && shadowRoot.removeChild(content);
     }
   }
 }
 
 function sendMsg(param) {
-  chrome.extension.sendMessage({ greeting: 'hello', param: param }, function (
-    response
-  ) { });
+  chrome.extension.sendMessage({ greeting: 'hello', param: param });
 }
 
 chrome.extension.onMessage.addListener(function (
@@ -77,9 +142,37 @@ function handler(result) {
     alert('translate result got error!');
   }
   try {
-    buildYouDaoPop(result);
+    buildShadowDom(result);
+    // buildYouDaoPop(result);
   } catch (e) {
     console.log(e);
+  }
+}
+
+const shadowHostId = 'ka_translate_root';
+
+
+function buildShadowDom(result) {
+  let shadowHost = document.querySelector(`#${shadowHostId}`) || null;
+  if (!shadowHost) {
+    shadowHost = document.createElement('div');
+    shadowHost.id = shadowHostId;
+    document.body.appendChild(shadowHost);
+    
+    const style = document.createElement('style');
+    style.innerHTML = css;
+
+    const shadowRoot = shadowHost.attachShadow({mode: 'open'});
+    const resDom = buildYouDaoPop(result);
+    shadowRoot.resetStyleInheritance = false;
+    shadowRoot.appendChild(style);
+    shadowRoot.appendChild(resDom);
+  } else {
+    const shadowRoot = shadowHost.shadowRoot;
+    const content = shadowRoot.querySelector('.translate_pop');
+    content && shadowRoot.removeChild(content);
+
+    shadowRoot.appendChild(buildYouDaoPop(result));
   }
 }
 
@@ -90,10 +183,6 @@ function buildYouDaoPop(result) {
   let x_direct = 0;
   let y_direct = 0;
 
-  // remove pop if exsit
-  if (document.getElementsByClassName('translate_pop').length) {
-    document.getElementsByClassName('translate_pop')[0].remove();
-  }
   let pop = document.createElement('div');
 
   // build title
@@ -170,6 +259,6 @@ function buildYouDaoPop(result) {
 
   symbol_dom.appendChild(tsWeb);
   pop.appendChild(symbol_dom);
-  document.getElementsByTagName('body')[0].appendChild(pop);
+  return pop;
 }
 
