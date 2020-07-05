@@ -23,12 +23,11 @@
 
 // console.log(md5);
 
-
 function buildYouDaoUrl(request) {
   // 有道接口
-  var appKey = '41eb757863a2c342';
-  var key = 'hAq4XkNzH54xcUkS4onvd4ofOLqgSWEE';
-  var salt = (new Date).getTime();
+  var appKey = "41eb757863a2c342";
+  var key = "hAq4XkNzH54xcUkS4onvd4ofOLqgSWEE";
+  var salt = new Date().getTime();
   var curTime = Math.round(new Date().getTime() / 1000);
   var query = request.param.q;
   // 多个query可以用\n连接  如 query='apple\norange\nbanana\npear'
@@ -47,10 +46,9 @@ function buildYouDaoUrl(request) {
     signType: "v3",
     curtime: curTime,
   };
-  let params = Object.keys(data).map(key => `${key}=${data[key]}`);
-  return 'http://openapi.youdao.com/api?' + params.join('&');
+  let params = Object.keys(data).map((key) => `${key}=${data[key]}`);
+  return "http://openapi.youdao.com/api?" + params.join("&");
 }
-
 
 function truncate(q) {
   var len = q.length;
@@ -75,7 +73,7 @@ chrome.extension.onMessage.addListener(function (
         sendMsg(JSON.parse(req.response));
       } catch (e) {
         console.log(e, req.response);
-        request.greeting == "farewell"
+        request.greeting == "farewell";
       }
     };
     req.send();
@@ -90,7 +88,42 @@ function sendMsg(msg) {
     chrome.tabs.sendMessage(
       tab.id,
       { greeting: "hello", result: msg },
-      function (response) { }
+      function (response) {}
     );
   });
 }
+
+// notifications
+var opt = {
+  type: "basic",
+  title: "Primary Title",
+  message: "Primary message to display",
+  iconUrl: "icon48.png",
+};
+
+var opt = {
+  type: "list",
+  title: "Primary Title",
+  message: "Primary message to display",
+  iconUrl: "icon48.png",
+  items: [
+    { title: "Item1", message: "This is item 1." },
+    { title: "Item2", message: "This is item 2." },
+    { title: "Item3", message: "This is item 3." },
+  ],
+};
+
+// chrome.notifications.create(opt, notificationId => {console.log(notificationId)});
+
+// system
+chrome.system.cpu.getInfo((data) => {
+  console.log(data);
+});
+chrome.system.memory.getInfo((data) => {
+  console.log(data);
+});
+chrome.system.storage.getInfo((data) => {
+  console.log(data);
+});
+
+// alarms
