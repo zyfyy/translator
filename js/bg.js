@@ -1,128 +1,104 @@
-// 百度翻译 API
-// http://api.fanyi.baidu.com/doc/21
-// const baiduApiUrl = "https://fanyi-api.baidu.com/api/trans/vip/translate";
-// const baiduAppId = "20181101000228392";
-// const baiduKey = "1R5FL6RE9TDLJazPTere";
+/**
+ * @file bg.js 后台页面相关功能逻辑
+ */
 
-// let baiduBuildUrl = request => {
-//   let salt = Math.floor(Math.random() * 10000);
-//   let hashable = baiduAppId + request.param.q + salt + baiduKey;
-//   let sign = md5(hashable);
-//   let params = [
-//     `appid=${baiduAppId}`,
-//     `salt=${salt}`,
-//     `from=${request.param.from}`,
-//     `to=${request.param.to}`,
-//     `q=${request.param.q}`,
-//     `sign=${sign}`,
-//   ].join("&");
-//   var url = `${baiduApiUrl}?${params}`;
-//   console.log(hashable, url, sign);
-//   return url;
-// }
+import sha256 from './sha256.min.min.js';
 
-// console.log(md5);
+const sendData = data => {
+  chrome.tabs.getSelected(null, function (tab) {
+    chrome.tabs.sendMessage(
+      tab.id,
+      { type: 'translate', result: msg }
+    );
+  });
+};
 
-function buildYouDaoUrl(request) {
+const buildYouDaoUrl = request => {
   // 有道接口
-  var appKey = "41eb757863a2c342";
-  var key = "hAq4XkNzH54xcUkS4onvd4ofOLqgSWEE";
-  var salt = new Date().getTime();
-  var curTime = Math.round(new Date().getTime() / 1000);
-  var query = request.param.q;
-  // 多个query可以用\n连接  如 query='apple\norange\nbanana\npear'
-  var from = request.param.from;
-  var to = request.param.to;
-  var str1 = appKey + truncate(query) + salt + curTime + key;
+  const appKey = '41eb757863a2c342';
+  const key = 'hAq4XkNzH54xcUkS4onvd4ofOLqgSWEE';
+  const salt = new Date().getTime();
+  const curTime = Math.round(new Date().getTime() / 1000);
+  const word = request.word;
 
-  var sign = sha256(str1);
-  var data = {
-    q: query,
+  const str = appKey + truncate(word) + salt + curTime + key;
+  const sign = sha256(str);
+
+  const data = {
+    q: word,
     appKey: appKey,
     salt: salt,
-    from: from,
-    to: to,
     sign: sign,
-    signType: "v3",
     curtime: curTime,
+    from: 'en',
+    to: 'zh',
+    signType: 'v3'
   };
-  let params = Object.keys(data).map((key) => `${key}=${data[key]}`);
-  return "http://openapi.youdao.com/api?" + params.join("&");
-}
 
-function truncate(q) {
-  var len = q.length;
+  if (word.match(/[^\x00-\x80]/g)) {
+    data.from = 'zh';
+    data.to = 'en';
+  }
+
+  const params = Object.keys(data).map(key => `${key}=${data[key]}`);
+  return 'http://openapi.youdao.com/api?' + params.join('&');
+};
+
+const truncate = q => {
+  const len = q.length;
   if (len <= 20) return q;
   return q.substring(0, 10) + len + q.substring(len - 10, len);
-}
+};
 
-chrome.extension.onMessage.addListener(function (
+chrome.extension.onMessage.addListener(async function (
   request,
   sender,
   sendResponse
 ) {
-  if (request.greeting == "hello") {
-    // const url = baiduBuildUrl(request);
-    const url = buildYouDaoUrl(request);
-
-    var req = new XMLHttpRequest();
-    req.open("GET", url, true);
-    req.onload = function () {
-      try {
-        // console.log(JSON.parse(req.response));
-        sendMsg(JSON.parse(req.response));
-      } catch (e) {
-        console.log(e, req.response);
-        request.greeting == "farewell";
-      }
-    };
-    req.send();
-
-    sendResponse({ farewell: "bye" });
-  } else if (request.greeting == "farewell") {
+  if (request.type == 'translate') {
+    try {
+      const url = buildYouDaoUrl(request);
+      const req = await fetch(url, {
+        method: 'GET'
+      });
+      const data = await req.json();
+      sendData(data);
+    } catch (e) {
+      console.warn('failed to request translation', e);
+    }
   }
 });
 
-function sendMsg(msg) {
-  chrome.tabs.getSelected(null, function (tab) {
-    chrome.tabs.sendMessage(
-      tab.id,
-      { greeting: "hello", result: msg },
-      function (response) {}
-    );
-  });
-}
-
 // notifications
 var opt = {
-  type: "basic",
-  title: "Primary Title",
-  message: "Primary message to display",
-  iconUrl: "icon48.png",
+  type: 'basic',
+  title: 'Primary Title',
+  message: 'Primary message to display',
+  iconUrl: 'icon48.png'
 };
 
 var opt = {
-  type: "list",
-  title: "Primary Title",
-  message: "Primary message to display",
-  iconUrl: "icon48.png",
+  type: 'list',
+  title: 'Primary Title',
+  message: 'Primary message to display',
+  iconUrl: 'icon48.png',
   items: [
-    { title: "Item1", message: "This is item 1." },
-    { title: "Item2", message: "This is item 2." },
-    { title: "Item3", message: "This is item 3." },
-  ],
+    { title: 'Item1', message: 'This is item 1.' },
+    { title: 'Item2', message: 'This is item 2.' },
+    { title: 'Item3', message: 'This is item 3.' }
+  ]
 };
 
 // chrome.notifications.create(opt, notificationId => {console.log(notificationId)});
 
 // system
-chrome.system.cpu.getInfo((data) => {
+chrome.system.cpu.getInfo(data => {
   console.log(data);
 });
-chrome.system.memory.getInfo((data) => {
+chrome.system.memory.getInfo(data => {
   console.log(data);
 });
-chrome.system.storage.getInfo((data) => {
+chrome.system.storage.getInfo(data => {
   console.log(data);
 });
 
