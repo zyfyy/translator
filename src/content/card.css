@@ -1,0 +1,63 @@
+.translate_pop {
+  position: absolute;
+  background: rgba(120, 10, 120, 0.8);
+  box-shadow: 1px 1px 3px rgba(120, 10, 120, 0.6);
+  border-radius: 6px;
+  color: #fff;
+  padding: 12px 12px 12px 12px;
+  z-index: 1000000;
+  font-size: 12px;
+}
+
+.translate_pop::selection {
+  color: #fff;
+  background: transparent;
+}
+
+.translate_pop h3 {
+  margin: 5px 0;
+  padding: 0;
+  border-bottom: 1px dotted #fff;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.translate_pop h3 span {
+  font-size: 12px;
+  color: #26ff00;
+}
+
+.translate_pop .translate_basic {
+  margin: 6px 0;
+}
+
+.translate_pop .translate_basic_parts ol {
+  font-size: 12px;
+  margin: 0;
+  display: block;
+  list-style-type: decimal;
+  margin-block-start: 0em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 40px;
+}
+
+.translate_pop .translate_basic_parts ol li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+.translate_pop .translate_web {
+  border-top: 1px dotted #fff;
+  margin-top: 12px;
+}
+
+.translate_pop .translate_web_parts h5 {
+  font-size: 12px;
+  margin: 5px 0 0 0;
+}
+
+.translate_pop .translate_web_parts p {
+  margin: 0;
+}
