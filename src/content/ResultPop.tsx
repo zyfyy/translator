@@ -45,6 +45,22 @@ const BasicExplain = ({ exp }: BasicExplainProps) => {
   }
 };
 
+const buildPhText: (data: phoneticDataType) => string = (data) => {
+  const phs = {
+    phonetic: '标',
+    'us-phonetic': '美',
+    'uk-phonetic': '英',
+  };
+  const phText: string[] = [];
+  (data && (Object.keys(phs) as Array<keyof typeof phs>)).forEach((key) => {
+    if (!data[key]) {
+      return;
+    }
+    phText.push(`${phs[key]}: /${data[key]}/`);
+  });
+  return phText.join(' ❥➻ ');
+};
+
 const ResultPop = ({ word }: ResultPopProps) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<resDataType | null>(null);
@@ -62,22 +78,6 @@ const ResultPop = ({ word }: ResultPopProps) => {
       });
   }, [word]);
 
-  const buildPhText: (data: phoneticDataType) => string = (data) => {
-    const phs = {
-      phonetic: '标',
-      'us-phonetic': '美',
-      'uk-phonetic': '英',
-    };
-    const phText: string[] = [];
-    (Object.keys(phs) as Array<keyof typeof phs>).forEach((key) => {
-      if (!data[key]) {
-        return;
-      }
-      phText.push(`${phs[key]}: /${data[key]}/`);
-    });
-    return phText.join(' ❥➻ ');
-  };
-
   return (
     <div className="translate_pop">
       {loading || !result ? (
@@ -85,27 +85,39 @@ const ResultPop = ({ word }: ResultPopProps) => {
       ) : (
         <>
           <h3>
-            {result.query} <span>2次</span>
+            {result.query} <span></span>
           </h3>
-          <div className="translate_ph">{buildPhText(result.basic)}</div>
-          {result.basic.explains && (
-            <div className="translate_basic">
-              {result.basic.explains.map((exp, idx) => {
-                return <BasicExplain key={idx} exp={exp} />;
-              })}
-            </div>
-          )}
-          {result.web && (
-            <div className="translate_web">
-              {result.web.map((symbol, idx) => {
-                return (
-                  <div key={idx} className="translate_web_parts">
-                    <h5>{symbol.key}</h5>
-                    <p>{symbol.value.join(',')}</p>
-                  </div>
-                );
-              })}
-            </div>
+          {result.isWord ? (
+            <>
+              <div className="translate_ph">{buildPhText(result.basic)}</div>
+              {result.basic.explains && (
+                <div className="translate_basic">
+                  {result.basic.explains.map((exp, idx) => {
+                    return <BasicExplain key={idx} exp={exp} />;
+                  })}
+                </div>
+              )}
+              {result.web && (
+                <div className="translate_web">
+                  {result.web.map((symbol, idx) => {
+                    return (
+                      <div key={idx} className="translate_web_parts">
+                        <h5>{symbol.key}</h5>
+                        <p>{symbol.value.join(',')}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="translate_basic">
+                {result.translation.map((exp, idx) => {
+                  return <BasicExplain key={idx} exp={exp} />;
+                })}
+              </div>
+            </>
           )}
         </>
       )}

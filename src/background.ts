@@ -17,10 +17,10 @@ interface YouDaoQueryInfo {
 
 // 请求有道翻译返回数据
 export interface resDataType {
-  errorCode: string,
-  isWord: boolean,
-  l: string,
-  query: string,
+  errorCode: string;
+  isWord: boolean;
+  l: string;
+  query: string;
   translation: string[];
   times: number;
   basic: {
@@ -28,7 +28,7 @@ export interface resDataType {
     'us-phonetic'?: string;
     'uk-phonetic'?: string;
     explains?: string[];
-    'exam_type'?: string[];
+    exam_type?: string[];
   };
   web?: {
     key: string;
