@@ -1,3 +1,20 @@
+.entry {
+  background: rgba(120, 10, 120, 0.8);
+  padding: 3px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  opacity: 0.5;
+  box-shadow: 1px 1px 3px rgba(120, 10, 120, 0.6);
+}
+.entry:hover {
+  opacity: 1;
+}
+
 .translate_pop {
   position: absolute;
   background: rgba(120, 10, 120, 0.8);
@@ -7,6 +24,8 @@
   padding: 12px 12px 12px 12px;
   z-index: 1000000;
   font-size: 12px;
+  width: max-content;
+  max-width: 300px;
 }
 
 .translate_pop::selection {

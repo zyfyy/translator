@@ -2,9 +2,9 @@ import {
   translateRequestMsgType,
   translateResponseMsgType,
   resDataType,
-} from './background';
+} from '../background';
 
-import css from '!!raw-loader!./content/card.css';
+import css from '!!raw-loader!./card.css';
 import lodash from 'lodash';
 
 

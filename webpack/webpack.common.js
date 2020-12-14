@@ -1,6 +1,9 @@
 const webpack = require('webpack');
 const path = require('path');
+
+
 const CopyPlugin = require('copy-webpack-plugin');
+
 const srcDir = '../src/';
 
 module.exports = {
@@ -8,7 +11,7 @@ module.exports = {
     popup: path.join(__dirname, srcDir + 'popup.ts'),
     options: path.join(__dirname, srcDir + 'options.ts'),
     background: path.join(__dirname, srcDir + 'background.ts'),
-    content: path.join(__dirname, srcDir + 'content.ts'),
+    content: path.join(__dirname, srcDir + 'content.tsx'),
   },
   cache: true,
   output: {
@@ -25,8 +28,24 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
+        exclude: /(node_modules|bower_components)/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                [
+                  '@babel/env',
+                  {
+                    modules: false,
+                  },
+                ],
+                '@babel/preset-react',
+                '@babel/preset-typescript',
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.css$/i,
@@ -39,16 +58,18 @@ module.exports = {
               modules: { auto: true }, // enable css module
             },
           },
-        ]
-      }
+        ],
+      },
     ],
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
+    alias: {
+      '@': path.join(process.cwd(), 'src'),
+    },
   },
   plugins: [
-    // exclude locale files in moment
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    // new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new CopyPlugin({
       patterns: [{ from: '.', to: '../', context: 'public' }],
       options: {},
