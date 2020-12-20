@@ -9,6 +9,7 @@
   text-align: center;
   border-radius: 4px;
   opacity: 0.5;
+  font-size: 16px;
   box-shadow: 1px 1px 3px rgba(120, 10, 120, 0.6);
 }
 .entry:hover {
@@ -74,7 +75,7 @@
 
 .translate_pop .translate_web_parts h5 {
   font-size: 12px;
-  margin: 5px 0 0 0;
+  margin: 24px 0 0 0;
 }
 
 .translate_pop .translate_web_parts p {

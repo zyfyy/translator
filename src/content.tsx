@@ -51,10 +51,12 @@ export const useSelectWord = () => {
       }
       setWord(selected);
   
-      const wordPos_x = e.clientX + window.scrollX + mouseGap;
-      const wordPos_y = e.clientY + window.scrollY + mouseGap;
-      shadowHost.style.top = wordPos_y + 'px';
-      shadowHost.style.left = wordPos_x + 'px';
+      Promise.resolve(() => {
+        const wordPos_x = e.clientX + window.scrollX + mouseGap;
+        const wordPos_y = e.clientY + window.scrollY + mouseGap;
+        shadowHost.style.top = wordPos_y + 'px';
+        shadowHost.style.left = wordPos_x + 'px';
+      });
     };
 
     window.addEventListener('click', updateClickState);
