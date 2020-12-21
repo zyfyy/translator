@@ -26,6 +26,7 @@ const SHADOW_HOST_ID = 'ka_translate_root';
 const shadowHost = document.createElement('div');
 shadowHost.id = SHADOW_HOST_ID;
 shadowHost.style.position = 'absolute';
+shadowHost.style.zIndex = `${Number.MAX_SAFE_INTEGER}`;
 document.body.appendChild(shadowHost);
 
 // shadow root
@@ -51,12 +52,12 @@ export const useSelectWord = () => {
       }
       setWord(selected);
   
-      Promise.resolve(() => {
+      Promise.resolve((() => {
         const wordPos_x = e.clientX + window.scrollX + mouseGap;
         const wordPos_y = e.clientY + window.scrollY + mouseGap;
         shadowHost.style.top = wordPos_y + 'px';
         shadowHost.style.left = wordPos_x + 'px';
-      });
+      })());
     };
 
     window.addEventListener('click', updateClickState);

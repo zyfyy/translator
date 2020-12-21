@@ -16,6 +16,7 @@
     "url": "https://github.com/chibat/chrome-extension-typescript-starter.git"
   },
   "dependencies": {
+    "antd": "^4.9.4",
     "js-sha256": "^0.9.0",
     "lodash": "^4.17.20",
     "react": "^17.0.1",
@@ -25,6 +26,7 @@
     "@babel/preset-env": "^7.12.10",
     "@babel/preset-react": "^7.12.10",
     "@babel/preset-typescript": "^7.12.7",
+    "@svgr/webpack": "^5.5.0",
     "@types/chrome": "0.0.126",
     "@types/jest": "^26.0.19",
     "@types/lodash": "^4.14.165",

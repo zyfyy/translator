@@ -1,14 +1,13 @@
 const webpack = require('webpack');
 const path = require('path');
 
-
 const CopyPlugin = require('copy-webpack-plugin');
 
 const srcDir = '../src/';
 
 module.exports = {
   entry: {
-    popup: path.join(__dirname, srcDir + 'popup.ts'),
+    popup: path.join(__dirname, srcDir + 'popup.tsx'),
     options: path.join(__dirname, srcDir + 'options.ts'),
     background: path.join(__dirname, srcDir + 'background.ts'),
     content: path.join(__dirname, srcDir + 'content.tsx'),
@@ -27,6 +26,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
+      },
+      {
         test: /\.tsx?$/,
         exclude: /(node_modules|bower_components)/,
         use: [
@@ -35,7 +38,7 @@ module.exports = {
             options: {
               presets: [
                 [
-                  '@babel/env',
+                  '@babel/preset-env',
                   {
                     modules: false,
                   },

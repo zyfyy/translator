@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import {
   translateRequestMsgType,
   translateResponseMsgType,
-  resDataType,
+  storageDataType,
 } from '@/background';
+
+import Sound from './sound.svg';
 
 type ResultPopProps = {
   word: string;
@@ -64,7 +66,7 @@ const buildPhText: (data: phoneticDataType) => string = (data) => {
 
 const ResultPop = ({ word }: ResultPopProps) => {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<resDataType | null>(null);
+  const [result, setResult] = useState<storageDataType | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -74,10 +76,17 @@ const ResultPop = ({ word }: ResultPopProps) => {
         setLoading(false);
         if (res.result && res.result.errorCode === '0') {
           // console.log(res);
-          setResult(res.result as resDataType);
+          setResult(res.result as storageDataType);
         }
       });
   }, [word]);
+
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const playSound = (e: React.MouseEvent<SVGElement, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    word && audioRef.current?.play();
+  };
 
   return (
     <div className="translate_pop">
@@ -85,8 +94,26 @@ const ResultPop = ({ word }: ResultPopProps) => {
         <>loading...</>
       ) : (
         <>
+          {word && (
+            <audio
+              ref={audioRef}
+              preload="auto"
+              src={`https://dict.youdao.com/dictvoice?audio=${word}&type=2`}></audio>
+          )}
           <h3>
-            {result.query} <span></span>
+            {result.query}
+            <Sound
+              style={{
+                margin: '0 6px -4px 4px',
+                padding: '2px 5px',
+                cursor: 'pointer',
+              }}
+              fill="#fff"
+              width="13"
+              onClick={playSound}
+              onMouseOver={playSound}
+            />
+            <span>{result.count}次</span>
           </h3>
 
           <div className="translate_ph">{buildPhText(result.basic)}</div>

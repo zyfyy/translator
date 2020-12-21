@@ -3,6 +3,7 @@
  */
 
 import { sha256 } from 'js-sha256';
+import { ChromeStorage } from './lib/storage';
 
 interface YouDaoQueryInfo {
   q: string;
@@ -36,6 +37,15 @@ export interface resDataType {
   }[];
 }
 
+export interface storageDataType extends resDataType {
+  count: number;
+  ct: number;
+  ut: number;
+}
+
+export interface storageDBType {
+  [key: string]: storageDataType;
+}
 // 请求bg js接口
 export interface translateRequestMsgType {
   type: 'translate';
@@ -51,6 +61,28 @@ export interface translateResponseMsgType {
 // 有道接口
 const YouDaoAppKey = '41eb757863a2c342';
 const YouDaoKey = 'hAq4XkNzH54xcUkS4onvd4ofOLqgSWEE';
+
+const queryDB = new ChromeStorage<storageDBType>('query');
+
+const queryStorage = async (word: string): Promise<storageDataType> => {
+  const res = await queryDB.get();
+  if (res && res[word]) {
+    res[word].count += 1;
+    res[word].ut = Date.now();
+    queryDB.set(res);
+    return res[word];
+  }
+  throw new Error('not found');
+};
+
+const setStorage = async (
+  word: string,
+  data: storageDataType
+): Promise<void> => {
+  const res = (await queryDB.get()) || {};
+  res[word] = data;
+  return await queryDB.set(res);
+};
 
 const buildYouDaoUrl = (request: translateRequestMsgType) => {
   const salt = new Date().getTime();
@@ -90,18 +122,31 @@ const truncate = (q: string) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
   if (request.type == 'translate') {
-    const url = buildYouDaoUrl(request);
-    fetch(url, {
-      method: 'GET',
-    })
-      .then((req) => {
-        req.json().then((data: resDataType) => {
-          sendMessage({ type: 'translate', result: data });
-        });
+    queryStorage(request.word)
+      .then((data) => {
+        sendMessage({ type: 'translate', result: data });
       })
-      .catch((e) => {
-        console.warn('failed to request translation', e);
-        sendMessage({ type: 'error', msg: 'failed to query youdao' });
+      .catch(() => {
+        const url = buildYouDaoUrl(request);
+        fetch(url, {
+          method: 'GET',
+        })
+          .then((res) => {
+            res.json().then((json: resDataType) => {
+              const data = {
+                ...json,
+                count: 1,
+                ct: Date.now(),
+                ut: Date.now(),
+              };
+              sendMessage({ type: 'translate', result: data });
+              setStorage(request.word, data);
+            });
+          })
+          .catch((e) => {
+            console.warn('failed to request translation', e);
+            sendMessage({ type: 'error', msg: 'failed to query youdao' });
+          });
       });
     return true;
   } else {

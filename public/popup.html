@@ -1,35 +1,46 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>retroaction</title>
-		<meta charset="utf-8">
-		<style type="text/css">
-			body, div, h1, h2, h3, h4, h5, h6, ul, li {
-				margin: 0;
-				padding: 0;
-			}
-			body {
-			}
-			ul, li {
-				list-style: none;
-			}
-			.head {
-				color: #fff;
-				text-align: center;
-			}
-			.content {
-				width: 200px;
-				border-radius: 10%;
-			}
-			img {
-				width: 100%;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="content">
-			<img src="img/mmqrcode1.png">
-		</div>
-		<script src='js/popup.js'></script>
-	</body>
+  <head>
+    <title>retroaction</title>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body,
+      div,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      ul,
+      li {
+        margin: 0;
+        padding: 0;
+      }
+      ul,
+      li {
+        list-style: none;
+      }
+      body {
+        height: auto !important;
+      }
+      #content {
+        min-width: 260px;
+        margin: 12px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      header .total {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script src="js/vendor.js"></script>
+    <script src="js/popup.js"></script>
+  </body>
 </html>
