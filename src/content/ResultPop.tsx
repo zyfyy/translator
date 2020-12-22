@@ -85,7 +85,10 @@ const ResultPop = ({ word }: ResultPopProps) => {
   const playSound = (e: React.MouseEvent<SVGElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
-    word && audioRef.current?.play();
+    word &&
+      audioRef.current
+        ?.play()
+        .catch((e) => console.log('CSP media none: play blocked.'));
   };
 
   return (

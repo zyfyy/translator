@@ -78,16 +78,18 @@ const Popup = () => {
     <>
       <header>
         <div className="total">Total: {count}</div>
-        <Progress
-          type="circle"
-          percent={percentage}
-          strokeColor={{
-            '0%': '#108ee9',
-            '100%': '#87d068',
-          }}
-          gapDegree={0}
-          width={40}
-        />
+        <div className="usage">
+          <Progress
+            type="circle"
+            percent={percentage}
+            strokeColor={{
+              '0%': '#108ee9',
+              '100%': '#87d068',
+            }}
+            gapDegree={0}
+            width={40}
+          />
+        </div>
       </header>
 
       <div className="word-list">

@@ -14,7 +14,6 @@ export interface translateMessageType {
 // shadowhost style
 const style = document.createElement('style');
 style.innerHTML = css.toString();
-const mouseGap = 20;
 
 // react mount id
 const MOUNT_POINT_ID = 'translator-verbose';
