@@ -48,11 +48,18 @@ const Popup = () => {
 
   const columns: ColumnsType<storageDataType> = [
     {
-      title: '单词',
+      title: 'word',
       dataIndex: 'query',
     },
     {
-      title: '次数',
+      title: 'translation',
+      dataIndex: 'translation',
+      render: (str: string[]) => {
+        return (<>{str.join(',')}</>)
+      }
+    },
+    {
+      title: 'count',
       dataIndex: 'count',
       align: 'center',
       width: 120,
@@ -60,7 +67,7 @@ const Popup = () => {
       sorter: (a: storageDataType, b: storageDataType) => a.count - b.count,
     },
     {
-      title: 'Delete',
+      title: 'OP',
       align: 'center',
       key: 'action',
       render: (record: storageDataType) => (
