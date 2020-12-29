@@ -34,6 +34,9 @@ const Popup = () => {
         const item: storageDataType = res[key];
         arr.push(item);
       }
+      arr.sort((a: storageDataType, b: storageDataType) => {
+        return b.ut - a.ut;
+      });
       setWords(arr);
     };
     queryStore();
