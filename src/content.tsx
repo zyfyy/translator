@@ -3,13 +3,18 @@ import ReactDOM from 'react-dom';
 
 import Content from './content/index';
 
-
+import insert from '!!raw-loader!./content/insert.css';
 import css from '!!raw-loader!./content/card.css';
 
 export interface translateMessageType {
   type: 'translate';
   word: string;
 }
+
+// instert style
+const insertStyle = document.createElement('style');
+insertStyle.innerHTML = insert.toString();
+document.body.appendChild(insertStyle);
 
 // shadowhost style
 const style = document.createElement('style');
