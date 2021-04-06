@@ -11,6 +11,7 @@ module.exports = {
     options: path.join(__dirname, srcDir + 'options.ts'),
     background: path.join(__dirname, srcDir + 'background.ts'),
     content: path.join(__dirname, srcDir + 'content.tsx'),
+    print: path.join(__dirname, srcDir + 'print.tsx'),
   },
   cache: true,
   output: {

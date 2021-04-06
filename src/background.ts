@@ -2,8 +2,8 @@
  * @file bg.js 后台页面相关功能逻辑
  */
 
-import { sha256 } from 'js-sha256';
-import { ChromeStorage } from './lib/storage';
+import {sha256} from 'js-sha256';
+import {ChromeStorage} from './lib/storage';
 
 interface YouDaoQueryInfo {
   q: string;
@@ -75,6 +75,11 @@ const queryStorage = async (word: string): Promise<storageDataType> => {
   throw new Error('not found');
 };
 
+const queryStorageAll = async (): Promise<storageDBType> => {
+  const res = await queryDB.get();
+  return res;
+};
+
 const setStorage = async (
   word: string,
   data: storageDataType
@@ -100,7 +105,7 @@ const buildYouDaoUrl = (request: translateRequestMsgType) => {
     curtime: curTime,
     from: 'en',
     to: 'zh',
-    signType: 'v3',
+    signType: 'v3'
   };
 
   if (word.match(/[^\x00-\x80]/g)) {
@@ -109,7 +114,7 @@ const buildYouDaoUrl = (request: translateRequestMsgType) => {
   }
 
   const params = (Object.keys(query) as Array<keyof typeof query>).map(
-    (key) => `${key}=${query[key]}`
+    key => `${key}=${query[key]}`
   );
   return 'http://openapi.youdao.com/api?' + params.join('&');
 };
@@ -121,33 +126,41 @@ const truncate = (q: string) => {
 };
 
 chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
-  if (request.type == 'translate') {
+  if (request.type === 'translate') {
     queryStorage(request.word)
-      .then((data) => {
-        sendMessage({ type: 'translate', result: data });
+      .then(data => {
+        sendMessage({type: 'translate', result: data});
       })
       .catch(() => {
         const url = buildYouDaoUrl(request);
         fetch(url, {
-          method: 'GET',
+          method: 'GET'
         })
-          .then((res) => {
+          .then(res => {
             res.json().then((json: resDataType) => {
               const data = {
                 ...json,
                 count: 1,
                 ct: Date.now(),
-                ut: Date.now(),
+                ut: Date.now()
               };
-              sendMessage({ type: 'translate', result: data });
+              sendMessage({type: 'translate', result: data});
               setStorage(request.word, data);
             });
           })
-          .catch((e) => {
+          .catch(e => {
             console.warn('failed to request translation', e);
-            sendMessage({ type: 'error', msg: 'failed to query youdao' });
+            sendMessage({type: 'error', msg: 'failed to query youdao'});
           });
       });
+    return true;
+  } else if (request.type === 'queryAll') {
+    queryStorageAll().then(data => {
+      sendMessage({type: 'queryAll', result: data});
+    });
+    return true;
+  } else if (request.type === 'print') {
+    chrome.tabs.create({url: chrome.runtime.getURL('print.html')});
     return true;
   } else {
     sendMessage('pong');

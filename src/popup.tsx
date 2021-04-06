@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import _ from "lodash";
+import React, {useState, useEffect} from 'react';
+import ReactDOM from 'react-dom';
+import _ from 'lodash';
 
-import { Table, Progress, Upload, Button, notification } from "antd";
-import { ColumnsType } from "antd/es/table";
-import "antd/dist/antd.css";
+import {Table, Progress, Upload, Button, notification} from 'antd';
+import {ColumnsType} from 'antd/es/table';
+import {PrinterFilled} from '@ant-design/icons';
+import 'antd/dist/antd.css';
 
-import { ChromeStorage } from "./lib/storage";
-import { storageDBType, storageDataType } from "./background";
+import {ChromeStorage} from './lib/storage';
+import {storageDBType, storageDataType} from './background';
 
-const mountedPoint = document.querySelector("#content");
+const mountedPoint = document.querySelector('#content');
 
 const MAXQUOTA = 1024 * 1024 * 3;
-const queryDB = new ChromeStorage<storageDBType>("query");
+const queryDB = new ChromeStorage<storageDBType>('query');
 
 function customizer(objValue: storageDataType, srcValue: storageDataType) {
   if (_.isUndefined(objValue)) {
@@ -31,7 +32,7 @@ const Popup = () => {
   const [updating, setUpdating] = useState(0);
 
   useEffect(() => {
-    chrome.storage.local.getBytesInUse((bytes) => {
+    chrome.storage.local.getBytesInUse(bytes => {
       setPercentage(Math.floor((bytes / MAXQUOTA) * 100 * 10) / 10);
     });
   }, [updating]);
@@ -60,46 +61,50 @@ const Popup = () => {
     setUpdating(updating + 1);
   };
 
+  const print = () => {
+    chrome.runtime.sendMessage({type: 'print'});
+  };
+
   const importWords = async (file: File) => {
     const content = await file.text();
     try {
       const data = JSON.parse(content);
       console.log(data);
-      if (data.validate && data.validate === "translator") {
+      if (data.validate && data.validate === 'translator') {
         delete data.validate;
         const pre = await queryDB.get();
         const merged = _.assignWith<storageDBType>(pre, data, customizer);
-        console.log("merged", merged, data, pre);
+        console.log('merged', merged, data, pre);
         await queryDB.set(merged);
         setUpdating(updating + 1);
-        notification.success({ message: "导入成功" });
+        notification.success({message: '导入成功'});
       } else {
-        notification.error({ message: "备份校验失败" });
+        notification.error({message: '备份校验失败'});
       }
     } catch (e) {
-      notification.error({ message: "备份数据损坏" });
+      notification.error({message: '备份数据损坏'});
     }
     return file;
   };
 
   const exportWords = async () => {
     const bak = await queryDB.get();
-    const bakWithValidate = Object.assign(bak, { validate: "translator" });
+    const bakWithValidate = Object.assign(bak, {validate: 'translator'});
     const file = new File(
       [JSON.stringify(bakWithValidate)],
-      "translator-bak.json",
+      'translator-bak.json',
       {
-        type: "application/json",
+        type: 'application/json'
       }
     );
     const url = URL.createObjectURL(file);
     chrome.downloads.download(
       {
-        filename: "translator-bak.json",
-        url,
+        filename: 'translator-bak.json',
+        url
       },
       () => {
-        notification.success({ message: "导出成功" });
+        notification.success({message: '导出成功'});
         URL.revokeObjectURL(url);
       }
     );
@@ -107,28 +112,28 @@ const Popup = () => {
 
   const columns: ColumnsType<storageDataType> = [
     {
-      title: "word",
-      dataIndex: "query",
+      title: 'word',
+      dataIndex: 'query'
     },
     {
-      title: "translation",
-      dataIndex: "translation",
+      title: 'translation',
+      dataIndex: 'translation',
       render: (str: string[]) => {
-        return <>{str.join(",")}</>;
-      },
+        return <>{str.join(',')}</>;
+      }
     },
     {
-      title: "count",
-      dataIndex: "count",
-      align: "center",
+      title: 'count',
+      dataIndex: 'count',
+      align: 'center',
       width: 120,
       showSorterTooltip: false,
-      sorter: (a: storageDataType, b: storageDataType) => a.count - b.count,
+      sorter: (a: storageDataType, b: storageDataType) => a.count - b.count
     },
     {
-      title: "OP",
-      align: "center",
-      key: "action",
+      title: 'OP',
+      align: 'center',
+      key: 'action',
       render: (record: storageDataType) => (
         <a
           onClick={() => {
@@ -137,8 +142,8 @@ const Popup = () => {
         >
           x
         </a>
-      ),
-    },
+      )
+    }
   ];
 
   return (
@@ -150,8 +155,8 @@ const Popup = () => {
             type="circle"
             percent={percentage}
             strokeColor={{
-              "0%": "#108ee9",
-              "100%": "#87d068",
+              '0%': '#108ee9',
+              '100%': '#87d068'
             }}
             gapDegree={0}
             width={40}
@@ -162,7 +167,7 @@ const Popup = () => {
             accept=".json"
             customRequest={() => null}
             beforeUpload={importWords}
-            progress={{ showInfo: false }}
+            progress={{showInfo: false}}
             showUploadList={false}
           >
             <Button size="small" type="link">
@@ -173,10 +178,13 @@ const Popup = () => {
             size="small"
             type="link"
             onClick={exportWords}
-            style={{ marginLeft: "1em" }}
+            style={{marginLeft: '1em'}}
           >
             导出
           </Button>
+        </div>
+        <div className="print">
+          <PrinterFilled style={{cursor: 'pointer'}} onClick={print} />
         </div>
       </header>
 
@@ -187,7 +195,7 @@ const Popup = () => {
           columns={columns}
           dataSource={words || []}
           size="small"
-          pagination={{ hideOnSinglePage: true }}
+          pagination={{hideOnSinglePage: true}}
         ></Table>
       </div>
     </>
