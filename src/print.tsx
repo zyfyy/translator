@@ -50,16 +50,16 @@ const Print = () => {
       render: (str, row) => {
         if (row.web) {
           return (
-            <>
+            <div className="web-trans">
               {row.web.map((symbol, idx) => {
                 return (
-                  <div key={idx}>
+                  <div key={idx} className={idx % 2 === 0 ? 'even' : 'odd'}>
                     <h5 style={{margin: '5px 0 0 0'}}>{symbol.key}</h5>
                     <span>{symbol.value.join(',')}</span>
                   </div>
                 );
               })}
-            </>
+            </div>
           );
         }
       }
