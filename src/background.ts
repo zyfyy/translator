@@ -22,7 +22,7 @@ export interface resDataType {
   isWord: boolean;
   l: string;
   query: string;
-  translation: string[];
+  translation: string[] | null;
   times: number;
   basic: {
     phonetic?: string;
@@ -145,7 +145,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
                 ut: Date.now()
               };
               sendMessage({type: 'translate', result: data});
-              setStorage(request.word, data);
+              if (data.errorCode === '0') {
+                setStorage(request.word, data);
+              }
             });
           })
           .catch(e => {

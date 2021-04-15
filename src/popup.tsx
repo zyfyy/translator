@@ -118,8 +118,8 @@ const Popup = () => {
     {
       title: 'translation',
       dataIndex: 'translation',
-      render: (str: string[]) => {
-        return <>{str.join(',')}</>;
+      render: (str: string[] | null) => {
+        return <>{str ? str.join(',') : ''}</>;
       }
     },
     {
