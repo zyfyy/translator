@@ -116,6 +116,25 @@ const Popup = () => {
       dataIndex: 'query'
     },
     {
+      title: '发音',
+      render: (str, row) => {
+        if (!row.basic) {
+          return <></>;
+        }
+        return (
+          <>
+            {row.basic.phonetic
+              ? `【标】/${row.basic.phonetic}/`
+              : row.basic['us-phonetic']
+              ? `【美】/${row.basic['us-phonetic']}/`
+              : row.basic['uk-phonetic']
+              ? `【英】${row.basic['uk-phonetic']}`
+              : ''}
+          </>
+        );
+      }
+    },
+    {
       title: 'translation',
       dataIndex: 'translation',
       render: (str: string[] | null) => {

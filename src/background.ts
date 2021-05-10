@@ -127,6 +127,7 @@ const truncate = (q: string) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
   if (request.type === 'translate') {
+    request.word = request.word.toLowerCase();
     queryStorage(request.word)
       .then(data => {
         sendMessage({type: 'translate', result: data});
