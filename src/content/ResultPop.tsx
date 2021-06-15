@@ -130,7 +130,7 @@ const ResultPop = ({ word }: ResultPopProps) => {
 
           {!result.isWord && (
             <div className="translate_basic">
-              {result.translation.map((exp, idx) => {
+              {result.translation?.map((exp, idx) => {
                 return <BasicExplain key={idx} exp={exp} />;
               })}
             </div>

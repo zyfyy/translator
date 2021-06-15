@@ -50,18 +50,16 @@ export const useSelectWord = () => {
 
       // 防止翻译代码，简单抽取几种特殊字符
       const limitStr = /[，。{}()<>\[\]:=|+-\/?]/;
-      if (selected.match(limitStr)) {
+      if (selected.match(limitStr) || !selected.length) {
         setWord('');
         return;
       }
       setWord(selected);
   
-      Promise.resolve((() => {
-        const wordPos_x = e.clientX + window.scrollX + mouseGap;
-        const wordPos_y = e.clientY + window.scrollY + mouseGap;
-        shadowHost.style.top = wordPos_y + 'px';
-        shadowHost.style.left = wordPos_x + 'px';
-      })());
+      const wordPos_x = e.clientX + window.scrollX + mouseGap;
+      const wordPos_y = e.clientY + window.scrollY + mouseGap;
+      shadowHost.style.top = wordPos_y + 'px';
+      shadowHost.style.left = wordPos_x + 'px';
     };
 
     window.addEventListener('click', updateClickState);
